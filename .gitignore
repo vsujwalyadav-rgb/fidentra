@@ -12,22 +12,19 @@ env/
 # Environment Variables
 .env
 
-# VS Code
+# IDEs
 .vscode/
+.idea/
 
-# macOS
+# Operating System Files
 .DS_Store
-
-# Windows
 Thumbs.db
 
 # Logs
 *.log
 
-# Pytest
+# Testing
 .pytest_cache/
-
-# Coverage
 .coverage
 htmlcov/
 
