@@ -1,8 +1,13 @@
-from fastapi import APIRouter
+from typing import Optional
+
+from fastapi import APIRouter, Depends
+from sqlalchemy.orm import Session
+
+from backend.app.core.config import settings
+from backend.app.database.connection import get_db
 from backend.app.models.alert import Alert
 from backend.app.services.alert_service import AlertService
-from backend.app.core.config import settings
-
+from backend.app.database.repository import AlertRepository
 
 router = APIRouter()
 
@@ -16,6 +21,7 @@ def root():
         "documentation": "/docs"
     }
 
+
 @router.get("/health")
 def health_check():
     return {
@@ -24,6 +30,33 @@ def health_check():
         "version": "0.1.0"
     }
 
+
 @router.post("/alerts")
-def receive_alert(alert: Alert):
-    return AlertService.process_alert(alert)
+def receive_alert(
+    alert: Alert,
+    db: Session = Depends(get_db)
+):
+    return AlertService.process_alert(alert, db)
+
+
+@router.get("/alerts")
+def get_alerts(
+    db: Session = Depends(get_db)
+):
+
+    alerts = AlertRepository.get_all(db)
+
+    return {
+        "count": len(alerts),
+        "alerts": [
+            {
+                "id": alert.id,
+                "title": alert.title,
+                "severity": alert.severity,
+                "source_ip": alert.source_ip,
+                "risk_score": alert.risk_score,
+                "recommended_action": alert.recommended_action,
+            }
+            for alert in alerts
+        ]
+    }

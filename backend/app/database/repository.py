@@ -1,0 +1,35 @@
+from sqlalchemy.orm import Session
+
+from backend.app.database.models import Alert
+
+
+class AlertRepository:
+
+    @staticmethod
+    def create(
+        db: Session,
+        title: str,
+        severity: str,
+        source_ip: str,
+        risk_score: int,
+        recommended_action: str,
+    ):
+
+        alert = Alert(
+            title=title,
+            severity=severity,
+            source_ip=source_ip,
+            risk_score=risk_score,
+            recommended_action=recommended_action,
+        )
+
+        db.add(alert)
+        db.commit()
+        db.refresh(alert)
+
+        return alert
+    
+    @staticmethod
+    def get_all(db: Session):
+
+        return db.query(Alert).all()
