@@ -47,3 +47,19 @@ class AlertRepository:
         query = query.order_by(Alert.id)
 
         return query.offset(skip).limit(limit).all()
+
+    @staticmethod
+    def count(
+        db: Session,
+        severity: str | None = None,
+        source_ip: str | None = None,
+    ):
+        query = db.query(Alert)
+
+        if severity:
+            query = query.filter(Alert.severity == severity)
+
+        if source_ip:
+            query = query.filter(Alert.source_ip == source_ip)
+
+        return query.count()

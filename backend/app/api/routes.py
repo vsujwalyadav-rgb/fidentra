@@ -57,10 +57,20 @@ def get_alerts(
         limit=limit,
     )
 
+    total = AlertRepository.count(
+        db=db,
+        severity=severity,
+        source_ip=source_ip,
+    )
+
+    total_pages = (total + limit - 1) // limit
+
     return {
         "page": page,
         "limit": limit,
         "count": len(alerts),
+        "total": total,
+        "total_pages": total_pages,
         "alerts": [
             {
                 "id": alert.id,
