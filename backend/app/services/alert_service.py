@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-
+from backend.app.rules.mitre_rules import MITRE_RULES
 from backend.app.core.logger import logger
 from backend.app.database.repository import AlertRepository
 from backend.app.models.alert import Alert
@@ -26,14 +26,9 @@ class AlertService:
 
         title = alert.title.lower()
 
-        if "powershell" in title:
-            return "T1059.001", "Execution"
-
-        if "brute force" in title:
-            return "T1110", "Credential Access"
-
-        if "impossible travel" in title:
-            return "T1078", "Initial Access"
+        for keyword, rule in MITRE_RULES.items():
+            if keyword in title:
+                return rule["technique"], rule["tactic"]
 
         return None, None
 
