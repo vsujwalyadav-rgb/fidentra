@@ -79,6 +79,8 @@ def get_alerts(
                 "severity": alert.severity,
                 "source_ip": alert.source_ip,
                 "risk_score": alert.risk_score,
+                "mitre_technique": alert.mitre_technique,
+                "mitre_tactic": alert.mitre_tactic,
                 "recommended_action": alert.recommended_action,
             }
             for alert in alerts
@@ -108,4 +110,6 @@ def get_alert_by_id(
         "source_ip": alert.source_ip,
         "risk_score": alert.risk_score,
         "recommended_action": alert.recommended_action,
+        "mitre_technique": alert.mitre_technique,
+        "mitre_tactic": alert.mitre_tactic,
     }

@@ -22,12 +22,30 @@ class AlertService:
         return 20
 
     @staticmethod
+    def map_mitre(alert: Alert) -> tuple[str | None, str | None]:
+
+        title = alert.title.lower()
+
+        if "powershell" in title:
+            return "T1059.001", "Execution"
+
+        if "brute force" in title:
+            return "T1110", "Credential Access"
+
+        if "impossible travel" in title:
+            return "T1078", "Initial Access"
+
+        return None, None
+
+    @staticmethod
     def process_alert(
         alert: Alert,
         db: Session
     ):
 
         risk_score = AlertService.calculate_risk(alert)
+
+        mitre_technique, mitre_tactic = AlertService.map_mitre(alert)
 
         logger.info(
             f"Received alert: {alert.title} | Severity: {alert.severity}"
@@ -46,12 +64,16 @@ class AlertService:
             source_ip=str(alert.source_ip),
             risk_score=risk_score,
             recommended_action=recommended_action,
+            mitre_technique=mitre_technique,
+            mitre_tactic=mitre_tactic,
         )
 
         processed_alert = {
             "message": "Alert processed successfully",
             "risk_score": risk_score,
             "recommended_action": recommended_action,
+            "mitre_technique": mitre_technique,
+            "mitre_tactic": mitre_tactic,
             "alert": alert.model_dump()
         }
 

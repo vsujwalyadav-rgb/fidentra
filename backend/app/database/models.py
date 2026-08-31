@@ -18,3 +18,7 @@ class Alert(Base):
     risk_score = Column(Integer, nullable=False)
 
     recommended_action = Column(String, nullable=False)
+
+    mitre_technique = Column(String, nullable=True)
+
+    mitre_tactic = Column(String, nullable=True)

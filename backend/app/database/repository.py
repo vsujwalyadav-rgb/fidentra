@@ -13,6 +13,8 @@ class AlertRepository:
         source_ip: str,
         risk_score: int,
         recommended_action: str,
+        mitre_technique: str | None = None,
+        mitre_tactic: str | None = None,
     ):
         alert = Alert(
             title=title,
@@ -20,6 +22,8 @@ class AlertRepository:
             source_ip=source_ip,
             risk_score=risk_score,
             recommended_action=recommended_action,
+            mitre_technique=mitre_technique,
+            mitre_tactic=mitre_tactic,
         )
 
         db.add(alert)
@@ -67,3 +71,10 @@ class AlertRepository:
             query = query.filter(Alert.source_ip == source_ip)
 
         return query.count()
+
+    @staticmethod
+    def get_by_id(
+        db: Session,
+        alert_id: int,
+    ):
+        return db.query(Alert).filter(Alert.id == alert_id).first()
