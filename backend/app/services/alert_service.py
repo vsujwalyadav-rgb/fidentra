@@ -3,7 +3,6 @@ from sqlalchemy.orm import Session
 from backend.app.core.logger import logger
 from backend.app.database.repository import AlertRepository
 from backend.app.models.alert import Alert
-from backend.app.services.storage import alerts
 
 
 class AlertService:
