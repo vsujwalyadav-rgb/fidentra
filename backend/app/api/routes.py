@@ -45,18 +45,19 @@ def get_alerts(
     source_ip: Optional[str] = None,
     page: int = Query(1, ge=1),
     limit: int = Query(20, ge=1, le=100),
+    sort: str = Query("latest", pattern="^(latest|oldest)$"),
     db: Session = Depends(get_db)
 ):
     skip = (page - 1) * limit
 
     alerts = AlertRepository.get_all(
-        db=db,
-        severity=severity,
-        source_ip=source_ip,
-        skip=skip,
-        limit=limit,
-    )
-
+    db=db,
+    severity=severity,
+    source_ip=source_ip,
+    skip=skip,
+    limit=limit,
+    sort=sort,
+)
     total = AlertRepository.count(
         db=db,
         severity=severity,

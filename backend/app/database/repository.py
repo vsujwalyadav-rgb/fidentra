@@ -35,6 +35,7 @@ class AlertRepository:
         source_ip: str | None = None,
         skip: int = 0,
         limit: int = 20,
+        sort: str = "latest",
     ):
         query = db.query(Alert)
 
@@ -44,7 +45,10 @@ class AlertRepository:
         if source_ip:
             query = query.filter(Alert.source_ip == source_ip)
 
-        query = query.order_by(Alert.id)
+        if sort == "oldest":
+            query = query.order_by(Alert.id.asc())
+        else:
+            query = query.order_by(Alert.id.desc())
 
         return query.offset(skip).limit(limit).all()
 
