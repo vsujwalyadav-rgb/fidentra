@@ -43,3 +43,10 @@ class AlertRepository:
             query = query.filter(Alert.source_ip == source_ip)
 
         return query.all()
+
+    @staticmethod
+    def get_by_id(
+        db: Session,
+        alert_id: int,
+    ):
+        return db.query(Alert).filter(Alert.id == alert_id).first()

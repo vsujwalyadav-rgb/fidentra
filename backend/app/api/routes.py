@@ -1,6 +1,6 @@
 from typing import Optional
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from backend.app.core.config import settings
@@ -65,4 +65,29 @@ def get_alerts(
             }
             for alert in alerts
         ]
+    }
+
+@router.get("/alerts/{alert_id}")
+def get_alert_by_id(
+    alert_id: int,
+    db: Session = Depends(get_db)
+):
+    alert = AlertRepository.get_by_id(
+        db=db,
+        alert_id=alert_id,
+    )
+
+    if alert is None:
+        raise HTTPException(
+        status_code=404,
+        detail="Alert not found"
+        )
+
+    return {
+        "id": alert.id,
+        "title": alert.title,
+        "severity": alert.severity,
+        "source_ip": alert.source_ip,
+        "risk_score": alert.risk_score,
+        "recommended_action": alert.recommended_action,
     }
