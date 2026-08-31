@@ -33,6 +33,8 @@ class AlertRepository:
         db: Session,
         severity: str | None = None,
         source_ip: str | None = None,
+        skip: int = 0,
+        limit: int = 20,
     ):
         query = db.query(Alert)
 
@@ -42,11 +44,6 @@ class AlertRepository:
         if source_ip:
             query = query.filter(Alert.source_ip == source_ip)
 
-        return query.all()
+        query = query.order_by(Alert.id)
 
-    @staticmethod
-    def get_by_id(
-        db: Session,
-        alert_id: int,
-    ):
-        return db.query(Alert).filter(Alert.id == alert_id).first()
+        return query.offset(skip).limit(limit).all()

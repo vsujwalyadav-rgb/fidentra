@@ -1,6 +1,6 @@
 from typing import Optional
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
 from backend.app.core.config import settings
@@ -40,19 +40,26 @@ def receive_alert(
 
 
 @router.get("/alerts")
-@router.get("/alerts")
 def get_alerts(
     severity: Optional[str] = None,
     source_ip: Optional[str] = None,
+    page: int = Query(1, ge=1),
+    limit: int = Query(20, ge=1, le=100),
     db: Session = Depends(get_db)
 ):
+    skip = (page - 1) * limit
+
     alerts = AlertRepository.get_all(
         db=db,
         severity=severity,
         source_ip=source_ip,
+        skip=skip,
+        limit=limit,
     )
 
     return {
+        "page": page,
+        "limit": limit,
         "count": len(alerts),
         "alerts": [
             {
