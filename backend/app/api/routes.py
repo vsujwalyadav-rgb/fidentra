@@ -40,11 +40,17 @@ def receive_alert(
 
 
 @router.get("/alerts")
+@router.get("/alerts")
 def get_alerts(
+    severity: Optional[str] = None,
+    source_ip: Optional[str] = None,
     db: Session = Depends(get_db)
 ):
-
-    alerts = AlertRepository.get_all(db)
+    alerts = AlertRepository.get_all(
+        db=db,
+        severity=severity,
+        source_ip=source_ip,
+    )
 
     return {
         "count": len(alerts),

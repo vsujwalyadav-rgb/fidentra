@@ -14,7 +14,6 @@ class AlertRepository:
         risk_score: int,
         recommended_action: str,
     ):
-
         alert = Alert(
             title=title,
             severity=severity,
@@ -28,8 +27,19 @@ class AlertRepository:
         db.refresh(alert)
 
         return alert
-    
-    @staticmethod
-    def get_all(db: Session):
 
-        return db.query(Alert).all()
+    @staticmethod
+    def get_all(
+        db: Session,
+        severity: str | None = None,
+        source_ip: str | None = None,
+    ):
+        query = db.query(Alert)
+
+        if severity:
+            query = query.filter(Alert.severity == severity)
+
+        if source_ip:
+            query = query.filter(Alert.source_ip == source_ip)
+
+        return query.all()
