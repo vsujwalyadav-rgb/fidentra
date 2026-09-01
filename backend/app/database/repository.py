@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-
+from sqlalchemy import func
 from backend.app.database.models import Alert
 
 
@@ -78,3 +78,27 @@ class AlertRepository:
         alert_id: int,
     ):
         return db.query(Alert).filter(Alert.id == alert_id).first()
+
+    @staticmethod
+    def get_severity_statistics(db: Session):
+        results = (
+            db.query(
+                Alert.severity,
+                func.count(Alert.id).label("count")
+            )
+            .group_by(Alert.severity)
+            .all()
+        )
+
+        return {
+            severity: count
+            for severity, count in results
+        }
+
+    @staticmethod
+    def get_high_risk_count(db: Session):
+        return (
+            db.query(Alert)
+            .filter(Alert.risk_score >= 80)
+            .count()
+        )

@@ -87,6 +87,22 @@ def get_alerts(
         ]
     }
 
+@router.get("/alerts/statistics")
+def get_alert_statistics(
+    db: Session = Depends(get_db)
+):
+    severity_statistics = AlertRepository.get_severity_statistics(db)
+
+    total_alerts = AlertRepository.count(db)
+
+    high_risk_alerts = AlertRepository.get_high_risk_count(db)
+
+    return {
+        "total_alerts": total_alerts,
+        "high_risk_alerts": high_risk_alerts,
+        "severity_distribution": severity_statistics,
+    }
+
 @router.get("/alerts/{alert_id}")
 def get_alert_by_id(
     alert_id: int,
