@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import func
 from backend.app.database.models import Alert
+from datetime import date
 
 
 class AlertRepository:
@@ -37,6 +38,8 @@ class AlertRepository:
         db: Session,
         severity: str | None = None,
         source_ip: str | None = None,
+        start_date: date | None = None,
+        end_date: date | None = None,
         skip: int = 0,
         limit: int = 20,
         sort: str = "latest",
@@ -48,6 +51,16 @@ class AlertRepository:
 
         if source_ip:
             query = query.filter(Alert.source_ip == source_ip)
+
+        if start_date:
+            query = query.filter(
+            func.date(Alert.created_at) >= start_date
+        )
+
+        if end_date:
+            query = query.filter(
+            func.date(Alert.created_at) <= end_date
+        )
 
         if sort == "oldest":
             query = query.order_by(Alert.id.asc())
@@ -61,6 +74,8 @@ class AlertRepository:
         db: Session,
         severity: str | None = None,
         source_ip: str | None = None,
+        start_date: date | None = None,
+        end_date: date | None = None,
     ):
         query = db.query(Alert)
 
@@ -69,6 +84,16 @@ class AlertRepository:
 
         if source_ip:
             query = query.filter(Alert.source_ip == source_ip)
+
+        if start_date:
+            query = query.filter(
+                func.date(Alert.created_at) >= start_date
+            )
+
+        if end_date:
+            query = query.filter(
+                func.date(Alert.created_at) <= end_date
+            )
 
         return query.count()
 

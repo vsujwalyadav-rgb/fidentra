@@ -1,4 +1,5 @@
 from typing import Optional
+from datetime import date
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
@@ -43,6 +44,8 @@ def receive_alert(
 def get_alerts(
     severity: Optional[str] = None,
     source_ip: Optional[str] = None,
+    start_date: Optional[date] = None,
+    end_date: Optional[date] = None,
     page: int = Query(1, ge=1),
     limit: int = Query(20, ge=1, le=100),
     sort: str = Query("latest", pattern="^(latest|oldest)$"),
@@ -51,17 +54,22 @@ def get_alerts(
     skip = (page - 1) * limit
 
     alerts = AlertRepository.get_all(
-    db=db,
-    severity=severity,
-    source_ip=source_ip,
-    skip=skip,
-    limit=limit,
-    sort=sort,
-)
+        db=db,
+        severity=severity,
+        source_ip=source_ip,
+        start_date=start_date,
+        end_date=end_date,
+        skip=skip,
+        limit=limit,
+        sort=sort,
+    )
+
     total = AlertRepository.count(
         db=db,
         severity=severity,
         source_ip=source_ip,
+        start_date=start_date,
+        end_date=end_date,
     )
 
     total_pages = (total + limit - 1) // limit
@@ -87,6 +95,7 @@ def get_alerts(
             for alert in alerts
         ]
     }
+
 
 @router.get("/alerts/statistics")
 def get_alert_statistics(
@@ -120,6 +129,7 @@ def get_alert_statistics(
         "alert_trends": alert_trends,
     }
 
+
 @router.get("/alerts/{alert_id}")
 def get_alert_by_id(
     alert_id: int,
@@ -132,8 +142,8 @@ def get_alert_by_id(
 
     if alert is None:
         raise HTTPException(
-        status_code=404,
-        detail="Alert not found"
+            status_code=404,
+            detail="Alert not found"
         )
 
     return {
