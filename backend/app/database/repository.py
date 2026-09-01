@@ -1,7 +1,9 @@
-from sqlalchemy.orm import Session
-from sqlalchemy import func
-from backend.app.database.models import Alert
 from datetime import date
+
+from sqlalchemy import func
+from sqlalchemy.orm import Session
+
+from backend.app.database.models import Alert
 
 
 class AlertRepository:
@@ -38,6 +40,8 @@ class AlertRepository:
         db: Session,
         severity: str | None = None,
         source_ip: str | None = None,
+        mitre_technique: str | None = None,
+        mitre_tactic: str | None = None,
         start_date: date | None = None,
         end_date: date | None = None,
         skip: int = 0,
@@ -52,15 +56,25 @@ class AlertRepository:
         if source_ip:
             query = query.filter(Alert.source_ip == source_ip)
 
+        if mitre_technique:
+            query = query.filter(
+                Alert.mitre_technique == mitre_technique
+            )
+
+        if mitre_tactic:
+            query = query.filter(
+                Alert.mitre_tactic == mitre_tactic
+            )
+
         if start_date:
             query = query.filter(
-            func.date(Alert.created_at) >= start_date
-        )
+                func.date(Alert.created_at) >= start_date
+            )
 
         if end_date:
             query = query.filter(
-            func.date(Alert.created_at) <= end_date
-        )
+                func.date(Alert.created_at) <= end_date
+            )
 
         if sort == "oldest":
             query = query.order_by(Alert.id.asc())
@@ -74,6 +88,8 @@ class AlertRepository:
         db: Session,
         severity: str | None = None,
         source_ip: str | None = None,
+        mitre_technique: str | None = None,
+        mitre_tactic: str | None = None,
         start_date: date | None = None,
         end_date: date | None = None,
     ):
@@ -84,6 +100,16 @@ class AlertRepository:
 
         if source_ip:
             query = query.filter(Alert.source_ip == source_ip)
+
+        if mitre_technique:
+            query = query.filter(
+                Alert.mitre_technique == mitre_technique
+            )
+
+        if mitre_tactic:
+            query = query.filter(
+                Alert.mitre_tactic == mitre_tactic
+            )
 
         if start_date:
             query = query.filter(
@@ -196,6 +222,6 @@ class AlertRepository:
         )
 
         return {
-            str(date): count
-            for date, count in results
+            str(alert_date): count
+            for alert_date, count in results
         }

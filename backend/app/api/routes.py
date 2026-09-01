@@ -44,6 +44,8 @@ def receive_alert(
 def get_alerts(
     severity: Optional[str] = None,
     source_ip: Optional[str] = None,
+    mitre_technique: Optional[str] = None,
+    mitre_tactic: Optional[str] = None,
     start_date: Optional[date] = None,
     end_date: Optional[date] = None,
     page: int = Query(1, ge=1),
@@ -57,6 +59,8 @@ def get_alerts(
         db=db,
         severity=severity,
         source_ip=source_ip,
+        mitre_technique=mitre_technique,
+        mitre_tactic=mitre_tactic,
         start_date=start_date,
         end_date=end_date,
         skip=skip,
@@ -68,8 +72,10 @@ def get_alerts(
         db=db,
         severity=severity,
         source_ip=source_ip,
+        mitre_technique=mitre_technique,
+        mitre_tactic=mitre_tactic,
         start_date=start_date,
-        end_date=end_date,
+            end_date=end_date,
     )
 
     total_pages = (total + limit - 1) // limit
