@@ -82,6 +82,7 @@ def get_alerts(
                 "mitre_technique": alert.mitre_technique,
                 "mitre_tactic": alert.mitre_tactic,
                 "recommended_action": alert.recommended_action,
+                "created_at": alert.created_at,
             }
             for alert in alerts
         ]
@@ -107,6 +108,8 @@ def get_alert_statistics(
 
     top_source_ips = AlertRepository.get_top_source_ips(db)
 
+    alert_trends = AlertRepository.get_alert_trends(db)
+
     return {
         "total_alerts": total_alerts,
         "high_risk_alerts": high_risk_alerts,
@@ -114,6 +117,7 @@ def get_alert_statistics(
         "mitre_technique_distribution": mitre_technique_statistics,
         "mitre_tactic_distribution": mitre_tactic_statistics,
         "top_source_ips": top_source_ips,
+        "alert_trends": alert_trends,
     }
 
 @router.get("/alerts/{alert_id}")
@@ -141,4 +145,5 @@ def get_alert_by_id(
         "recommended_action": alert.recommended_action,
         "mitre_technique": alert.mitre_technique,
         "mitre_tactic": alert.mitre_tactic,
+        "created_at": alert.created_at,
     }

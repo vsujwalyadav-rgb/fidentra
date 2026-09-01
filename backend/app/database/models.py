@@ -1,4 +1,5 @@
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, DateTime, Integer, String
+from sqlalchemy.sql import func
 from sqlalchemy.orm import declarative_base
 
 Base = declarative_base()
@@ -22,3 +23,9 @@ class Alert(Base):
     mitre_technique = Column(String, nullable=True)
 
     mitre_tactic = Column(String, nullable=True)
+
+    created_at = Column(
+    DateTime(timezone=True),
+    server_default=func.now(),
+    nullable=False,
+)

@@ -157,3 +157,20 @@ class AlertRepository:
             tactic: count
             for tactic, count in results
         }
+
+    @staticmethod
+    def get_alert_trends(db: Session):
+        results = (
+            db.query(
+                func.date(Alert.created_at).label("date"),
+                func.count(Alert.id).label("count"),
+            )
+            .group_by(func.date(Alert.created_at))
+            .order_by(func.date(Alert.created_at))
+            .all()
+        )
+
+        return {
+            str(date): count
+            for date, count in results
+        }
