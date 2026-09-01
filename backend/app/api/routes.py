@@ -97,10 +97,15 @@ def get_alert_statistics(
 
     high_risk_alerts = AlertRepository.get_high_risk_count(db)
 
+    mitre_technique_statistics = (
+        AlertRepository.get_mitre_technique_statistics(db)
+    )
+
     return {
         "total_alerts": total_alerts,
         "high_risk_alerts": high_risk_alerts,
         "severity_distribution": severity_statistics,
+        "mitre_technique_distribution": mitre_technique_statistics,
     }
 
 @router.get("/alerts/{alert_id}")

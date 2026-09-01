@@ -102,3 +102,20 @@ class AlertRepository:
             .filter(Alert.risk_score >= 80)
             .count()
         )
+
+    @staticmethod
+    def get_mitre_technique_statistics(db: Session):
+        results = (
+            db.query(
+                Alert.mitre_technique,
+                func.count(Alert.id).label("count")
+            )
+            .filter(Alert.mitre_technique.isnot(None))
+            .group_by(Alert.mitre_technique)
+            .all()
+        )
+
+        return {
+            technique: count
+            for technique, count in results
+        }
