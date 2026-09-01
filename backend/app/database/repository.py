@@ -140,3 +140,20 @@ class AlertRepository:
             source_ip: count
             for source_ip, count in results
         }
+
+    @staticmethod
+    def get_mitre_tactic_statistics(db: Session):
+        results = (
+            db.query(
+                Alert.mitre_tactic,
+                func.count(Alert.id).label("count")
+            )
+            .filter(Alert.mitre_tactic.isnot(None))
+            .group_by(Alert.mitre_tactic)
+            .all()
+        )
+
+        return {
+            tactic: count
+            for tactic, count in results
+        }
