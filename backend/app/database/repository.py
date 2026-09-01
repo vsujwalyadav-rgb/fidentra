@@ -119,3 +119,24 @@ class AlertRepository:
             technique: count
             for technique, count in results
         }
+
+    @staticmethod
+    def get_top_source_ips(
+        db: Session,
+        limit: int = 5,
+    ):
+        results = (
+            db.query(
+                Alert.source_ip,
+                func.count(Alert.id).label("count")
+            )
+            .group_by(Alert.source_ip)
+            .order_by(func.count(Alert.id).desc())
+            .limit(limit)
+            .all()
+        )
+
+        return {
+            source_ip: count
+            for source_ip, count in results
+        }
