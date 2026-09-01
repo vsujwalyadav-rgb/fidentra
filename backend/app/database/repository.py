@@ -42,6 +42,8 @@ class AlertRepository:
         source_ip: str | None = None,
         mitre_technique: str | None = None,
         mitre_tactic: str | None = None,
+        min_risk_score: int | None = None,
+        max_risk_score: int | None = None,  
         start_date: date | None = None,
         end_date: date | None = None,
         skip: int = 0,
@@ -64,6 +66,16 @@ class AlertRepository:
         if mitre_tactic:
             query = query.filter(
                 Alert.mitre_tactic == mitre_tactic
+            )
+
+        if min_risk_score is not None:
+            query = query.filter(
+                Alert.risk_score >= min_risk_score
+            )
+
+        if max_risk_score is not None:
+            query = query.filter(
+                Alert.risk_score <= max_risk_score
             )
 
         if start_date:
@@ -90,6 +102,8 @@ class AlertRepository:
         source_ip: str | None = None,
         mitre_technique: str | None = None,
         mitre_tactic: str | None = None,
+        min_risk_score: int | None = None,
+        max_risk_score: int | None = None,
         start_date: date | None = None,
         end_date: date | None = None,
     ):
@@ -110,6 +124,16 @@ class AlertRepository:
             query = query.filter(
                 Alert.mitre_tactic == mitre_tactic
             )
+
+        if min_risk_score is not None:
+            query = query.filter(
+                Alert.risk_score >= min_risk_score
+            )
+
+        if max_risk_score is not None:
+            query = query.filter(
+                Alert.risk_score <= max_risk_score
+            )       
 
         if start_date:
             query = query.filter(

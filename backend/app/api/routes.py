@@ -46,6 +46,8 @@ def get_alerts(
     source_ip: Optional[str] = None,
     mitre_technique: Optional[str] = None,
     mitre_tactic: Optional[str] = None,
+    min_risk_score: Optional[int] = Query(None, ge=0, le=100),
+    max_risk_score: Optional[int] = Query(None, ge=0, le=100),  
     start_date: Optional[date] = None,
     end_date: Optional[date] = None,
     page: int = Query(1, ge=1),
@@ -61,6 +63,8 @@ def get_alerts(
         source_ip=source_ip,
         mitre_technique=mitre_technique,
         mitre_tactic=mitre_tactic,
+        min_risk_score=min_risk_score,
+        max_risk_score=max_risk_score,
         start_date=start_date,
         end_date=end_date,
         skip=skip,
@@ -74,8 +78,10 @@ def get_alerts(
         source_ip=source_ip,
         mitre_technique=mitre_technique,
         mitre_tactic=mitre_tactic,
+        min_risk_score=min_risk_score,
+        max_risk_score=max_risk_score,
         start_date=start_date,
-            end_date=end_date,
+        end_date=end_date,
     )
 
     total_pages = (total + limit - 1) // limit
