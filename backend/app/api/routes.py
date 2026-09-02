@@ -43,6 +43,7 @@ def receive_alert(
 @router.get("/alerts")
 def get_alerts(
     severity: Optional[str] = None,
+    status: Optional[str] = None,
     source_ip: Optional[str] = None,
     search: Optional[str] = None,
     mitre_technique: Optional[str] = None,
@@ -62,6 +63,7 @@ def get_alerts(
     alerts = AlertRepository.get_all(
         db=db,
         severity=severity,
+        status=status,
         source_ip=source_ip,
         search=search,
         mitre_technique=mitre_technique,
@@ -79,6 +81,7 @@ def get_alerts(
     total = AlertRepository.count(
         db=db,
         severity=severity,
+        status=status,
         source_ip=source_ip,
         search=search,
         mitre_technique=mitre_technique,

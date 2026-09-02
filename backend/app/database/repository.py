@@ -41,6 +41,7 @@ class AlertRepository:
     def get_all(
         db: Session,
         severity: str | None = None,
+        status: str | None = None,
         source_ip: str | None = None,
         search: str | None = None,
         mitre_technique: str | None = None,
@@ -58,6 +59,9 @@ class AlertRepository:
 
         if severity:
             query = query.filter(Alert.severity == severity)
+
+        if status:
+            query = query.filter(Alert.status == status)
 
         if source_ip:
             query = query.filter(Alert.source_ip == source_ip)
@@ -116,6 +120,7 @@ class AlertRepository:
     def count(
         db: Session,
         severity: str | None = None,
+        status: str | None = None,
         source_ip: str | None = None,
         search: str | None = None,
         mitre_technique: str | None = None,
@@ -130,6 +135,9 @@ class AlertRepository:
 
         if severity:
             query = query.filter(Alert.severity == severity)
+
+        if status:
+            query = query.filter(Alert.status == status)
 
         if source_ip:
             query = query.filter(Alert.source_ip == source_ip)
