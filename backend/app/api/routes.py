@@ -48,6 +48,7 @@ def get_alerts(
     mitre_tactic: Optional[str] = None,
     min_risk_score: Optional[int] = Query(None, ge=0, le=100),
     max_risk_score: Optional[int] = Query(None, ge=0, le=100),  
+    recommended_action: Optional[str] = None,
     start_date: Optional[date] = None,
     end_date: Optional[date] = None,
     page: int = Query(1, ge=1),
@@ -65,6 +66,7 @@ def get_alerts(
         mitre_tactic=mitre_tactic,
         min_risk_score=min_risk_score,
         max_risk_score=max_risk_score,
+        recommended_action=recommended_action,
         start_date=start_date,
         end_date=end_date,
         skip=skip,
@@ -80,6 +82,7 @@ def get_alerts(
         mitre_tactic=mitre_tactic,
         min_risk_score=min_risk_score,
         max_risk_score=max_risk_score,
+        recommended_action=recommended_action,
         start_date=start_date,
         end_date=end_date,
     )

@@ -43,7 +43,8 @@ class AlertRepository:
         mitre_technique: str | None = None,
         mitre_tactic: str | None = None,
         min_risk_score: int | None = None,
-        max_risk_score: int | None = None,  
+        max_risk_score: int | None = None, 
+        recommended_action: str | None = None, 
         start_date: date | None = None,
         end_date: date | None = None,
         skip: int = 0,
@@ -78,6 +79,11 @@ class AlertRepository:
                 Alert.risk_score <= max_risk_score
             )
 
+        if recommended_action:
+            query = query.filter(
+                Alert.recommended_action == recommended_action
+            )    
+
         if start_date:
             query = query.filter(
                 func.date(Alert.created_at) >= start_date
@@ -104,6 +110,7 @@ class AlertRepository:
         mitre_tactic: str | None = None,
         min_risk_score: int | None = None,
         max_risk_score: int | None = None,
+        recommended_action: str | None = None,
         start_date: date | None = None,
         end_date: date | None = None,
     ):
@@ -133,7 +140,12 @@ class AlertRepository:
         if max_risk_score is not None:
             query = query.filter(
                 Alert.risk_score <= max_risk_score
-            )       
+            )
+
+        if recommended_action:
+            query = query.filter(
+                Alert.recommended_action == recommended_action
+            )           
 
         if start_date:
             query = query.filter(
