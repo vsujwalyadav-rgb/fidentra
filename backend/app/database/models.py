@@ -18,6 +18,12 @@ class Alert(Base):
 
     risk_score = Column(Integer, nullable=False)
 
+    status = Column(
+    String,
+    nullable=False,
+    default="new",
+    )
+
     recommended_action = Column(String, nullable=False)
 
     mitre_technique = Column(String, nullable=True)
@@ -28,4 +34,4 @@ class Alert(Base):
     DateTime(timezone=True),
     server_default=func.now(),
     nullable=False,
-)
+    )

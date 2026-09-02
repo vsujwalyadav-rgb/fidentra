@@ -16,6 +16,7 @@ class AlertRepository:
         source_ip: str,
         risk_score: int,
         recommended_action: str,
+        status: str = "new",
         mitre_technique: str | None = None,
         mitre_tactic: str | None = None,
     ):
@@ -24,6 +25,7 @@ class AlertRepository:
             severity=severity,
             source_ip=source_ip,
             risk_score=risk_score,
+            status=status,
             recommended_action=recommended_action,
             mitre_technique=mitre_technique,
             mitre_tactic=mitre_tactic,
