@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 
 from backend.app.core.config import settings
 from backend.app.database.connection import get_db
-from backend.app.models.alert import Alert
+from backend.app.models.alert import Alert, AlertStatusUpdate
 from backend.app.services.alert_service import AlertService
 from backend.app.database.repository import AlertRepository
 
@@ -146,6 +146,29 @@ def get_alert_statistics(
         "mitre_tactic_distribution": mitre_tactic_statistics,
         "top_source_ips": top_source_ips,
         "alert_trends": alert_trends,
+    }
+
+@router.patch("/alerts/{alert_id}/status")
+def update_alert_status(
+    alert_id: int,
+    status_update: AlertStatusUpdate,
+    db: Session = Depends(get_db),
+):
+    alert = AlertRepository.update_status(
+        db=db,
+        alert_id=alert_id,
+        status=status_update.status,
+    )
+
+    if alert is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Alert not found",
+        )
+
+    return {
+        "id": alert.id,
+        "status": alert.status,
     }
 
 

@@ -281,3 +281,25 @@ class AlertRepository:
             str(alert_date): count
             for alert_date, count in results
         }
+
+    @staticmethod
+    def update_status(
+        db: Session,
+        alert_id: int,
+        status: str,
+    ):
+        alert = (
+            db.query(Alert)
+            .filter(Alert.id == alert_id)
+            .first()
+        )
+
+        if alert is None:
+            return None
+
+        alert.status = status
+
+        db.commit()
+        db.refresh(alert)
+
+        return alert
