@@ -1,6 +1,6 @@
 from datetime import date
 
-from sqlalchemy import func
+from sqlalchemy import func, or_
 from sqlalchemy.orm import Session
 
 from backend.app.database.models import Alert
@@ -40,6 +40,7 @@ class AlertRepository:
         db: Session,
         severity: str | None = None,
         source_ip: str | None = None,
+        search: str | None = None,
         mitre_technique: str | None = None,
         mitre_tactic: str | None = None,
         min_risk_score: int | None = None,
@@ -58,6 +59,14 @@ class AlertRepository:
 
         if source_ip:
             query = query.filter(Alert.source_ip == source_ip)
+
+        if search:
+            query = query.filter(
+                or_(
+                    Alert.title.ilike(f"%{search}%"),
+                    Alert.source_ip.ilike(f"%{search}%"),
+                )
+            )    
 
         if mitre_technique:
             query = query.filter(
@@ -106,6 +115,7 @@ class AlertRepository:
         db: Session,
         severity: str | None = None,
         source_ip: str | None = None,
+        search: str | None = None,
         mitre_technique: str | None = None,
         mitre_tactic: str | None = None,
         min_risk_score: int | None = None,
@@ -121,6 +131,14 @@ class AlertRepository:
 
         if source_ip:
             query = query.filter(Alert.source_ip == source_ip)
+
+        if search:
+            query = query.filter(
+                or_(
+                    Alert.title.ilike(f"%{search}%"),
+                    Alert.source_ip.ilike(f"%{search}%"),
+                )
+            )
 
         if mitre_technique:
             query = query.filter(

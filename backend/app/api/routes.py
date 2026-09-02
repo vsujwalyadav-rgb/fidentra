@@ -44,6 +44,7 @@ def receive_alert(
 def get_alerts(
     severity: Optional[str] = None,
     source_ip: Optional[str] = None,
+    search: Optional[str] = None,
     mitre_technique: Optional[str] = None,
     mitre_tactic: Optional[str] = None,
     min_risk_score: Optional[int] = Query(None, ge=0, le=100),
@@ -62,6 +63,7 @@ def get_alerts(
         db=db,
         severity=severity,
         source_ip=source_ip,
+        search=search,
         mitre_technique=mitre_technique,
         mitre_tactic=mitre_tactic,
         min_risk_score=min_risk_score,
@@ -78,6 +80,7 @@ def get_alerts(
         db=db,
         severity=severity,
         source_ip=source_ip,
+        search=search,
         mitre_technique=mitre_technique,
         mitre_tactic=mitre_tactic,
         min_risk_score=min_risk_score,
