@@ -195,6 +195,22 @@ class AlertRepository:
         return db.query(Alert).filter(Alert.id == alert_id).first()
 
     @staticmethod
+    def get_status_statistics(db: Session):
+        results = (
+            db.query(
+                Alert.status,
+                func.count(Alert.id).label("count")
+            )
+            .group_by(Alert.status)
+            .all()
+        )
+
+        return {
+            status: count
+            for status, count in results
+        }
+
+    @staticmethod
     def get_severity_statistics(db: Session):
         results = (
             db.query(

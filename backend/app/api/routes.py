@@ -10,6 +10,7 @@ from backend.app.models.alert import Alert, AlertStatusUpdate
 from backend.app.services.alert_service import AlertService
 from backend.app.database.repository import AlertRepository
 
+
 router = APIRouter()
 
 
@@ -49,7 +50,7 @@ def get_alerts(
     mitre_technique: Optional[str] = None,
     mitre_tactic: Optional[str] = None,
     min_risk_score: Optional[int] = Query(None, ge=0, le=100),
-    max_risk_score: Optional[int] = Query(None, ge=0, le=100),  
+    max_risk_score: Optional[int] = Query(None, ge=0, le=100),
     recommended_action: Optional[str] = None,
     start_date: Optional[date] = None,
     end_date: Optional[date] = None,
@@ -141,6 +142,8 @@ def get_alert_statistics(
 
     alert_trends = AlertRepository.get_alert_trends(db)
 
+    status_statistics = AlertRepository.get_status_statistics(db)
+
     return {
         "total_alerts": total_alerts,
         "high_risk_alerts": high_risk_alerts,
@@ -149,7 +152,9 @@ def get_alert_statistics(
         "mitre_tactic_distribution": mitre_tactic_statistics,
         "top_source_ips": top_source_ips,
         "alert_trends": alert_trends,
+        "status_distribution": status_statistics,
     }
+
 
 @router.patch("/alerts/{alert_id}/status")
 def update_alert_status(
