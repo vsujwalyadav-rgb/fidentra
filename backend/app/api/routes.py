@@ -110,6 +110,9 @@ def get_alerts(
                 "source_ip": alert.source_ip,
                 "risk_score": alert.risk_score,
                 "status": alert.status,
+                "acknowledged_at": alert.acknowledged_at,
+                "resolved_at": alert.resolved_at,
+                "false_positive_at": alert.false_positive_at,
                 "mitre_technique": alert.mitre_technique,
                 "mitre_tactic": alert.mitre_tactic,
                 "recommended_action": alert.recommended_action,
@@ -235,14 +238,17 @@ def get_alert_by_id(
         )
 
     return {
-        "id": alert.id,
-        "title": alert.title,
-        "severity": alert.severity,
-        "source_ip": alert.source_ip,
-        "risk_score": alert.risk_score,
-        "status": alert.status,
-        "recommended_action": alert.recommended_action,
-        "mitre_technique": alert.mitre_technique,
-        "mitre_tactic": alert.mitre_tactic,
-        "created_at": alert.created_at,
-    }
+            "id": alert.id,
+            "title": alert.title,
+            "severity": alert.severity,
+            "source_ip": alert.source_ip,
+            "risk_score": alert.risk_score,
+            "status": alert.status,
+            "acknowledged_at": alert.acknowledged_at,
+            "resolved_at": alert.resolved_at,
+            "false_positive_at": alert.false_positive_at,
+            "recommended_action": alert.recommended_action,
+            "mitre_technique": alert.mitre_technique,
+            "mitre_tactic": alert.mitre_tactic,
+            "created_at": alert.created_at,
+        }

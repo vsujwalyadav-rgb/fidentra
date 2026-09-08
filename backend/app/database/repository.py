@@ -1,5 +1,4 @@
-from datetime import date
-
+from datetime import date, datetime, timezone
 from sqlalchemy import func, or_
 from sqlalchemy.orm import Session
 
@@ -351,13 +350,23 @@ class AlertRepository:
 
         db.add(status_history)
 
+        current_time = datetime.now(timezone.utc)
+
+        if status == "in_progress":
+            alert.acknowledged_at = current_time
+
+        elif status == "resolved":
+            alert.resolved_at = current_time
+
+        elif status == "false_positive":
+            alert.false_positive_at = current_time
+
         alert.status = status
 
         db.commit()
         db.refresh(alert)
 
         return alert
-
     @staticmethod
     def get_status_history(
         db: Session,

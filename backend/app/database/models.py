@@ -24,6 +24,21 @@ class Alert(Base):
     default="new",
     )
 
+    acknowledged_at = Column(
+        DateTime(timezone=True),
+        nullable=True,
+    )
+
+    resolved_at = Column(
+        DateTime(timezone=True),
+        nullable=True,
+    )
+
+    false_positive_at = Column(
+        DateTime(timezone=True),
+        nullable=True,
+    )
+
     recommended_action = Column(String, nullable=False)
 
     mitre_technique = Column(String, nullable=True)
@@ -35,6 +50,8 @@ class Alert(Base):
     server_default=func.now(),
     nullable=False,
     )
+
+    
 
 class AlertStatusHistory(Base):
     __tablename__ = "alert_status_history"
