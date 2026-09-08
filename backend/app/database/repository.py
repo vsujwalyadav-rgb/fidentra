@@ -5,6 +5,14 @@ from sqlalchemy.orm import Session
 
 from backend.app.database.models import Alert
 
+VALID_STATUS_TRANSITIONS = {
+    "new": ["in_progress"],
+    "in_progress": ["resolved", "false_positive"],
+    "resolved": [],
+    "false_positive": [],
+}
+
+
 
 class AlertRepository:
 
@@ -320,6 +328,16 @@ class AlertRepository:
 
         if alert is None:
             return None
+
+        current_status = alert.status
+
+        allowed_statuses = VALID_STATUS_TRANSITIONS.get(
+            current_status,
+            []
+        )   
+
+        if status not in allowed_statuses:
+            return False
 
         alert.status = status
 

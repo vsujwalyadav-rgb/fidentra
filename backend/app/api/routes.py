@@ -168,6 +168,12 @@ def update_alert_status(
         status=status_update.status,
     )
 
+    if alert is False:
+        raise HTTPException(
+            status_code=400,
+            detail="Invalid status transition",
+        )
+
     if alert is None:
         raise HTTPException(
             status_code=404,
