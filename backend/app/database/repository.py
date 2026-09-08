@@ -3,7 +3,8 @@ from datetime import date
 from sqlalchemy import func, or_
 from sqlalchemy.orm import Session
 
-from backend.app.database.models import Alert
+from backend.app.database.models import Alert, AlertStatusHistory
+
 
 VALID_STATUS_TRANSITIONS = {
     "new": ["in_progress"],
@@ -11,7 +12,6 @@ VALID_STATUS_TRANSITIONS = {
     "resolved": [],
     "false_positive": [],
 }
-
 
 
 class AlertRepository:
@@ -55,8 +55,8 @@ class AlertRepository:
         mitre_technique: str | None = None,
         mitre_tactic: str | None = None,
         min_risk_score: int | None = None,
-        max_risk_score: int | None = None, 
-        recommended_action: str | None = None, 
+        max_risk_score: int | None = None,
+        recommended_action: str | None = None,
         start_date: date | None = None,
         end_date: date | None = None,
         skip: int = 0,
@@ -80,7 +80,7 @@ class AlertRepository:
                     Alert.title.ilike(f"%{search}%"),
                     Alert.source_ip.ilike(f"%{search}%"),
                 )
-            )    
+            )
 
         if mitre_technique:
             query = query.filter(
@@ -105,7 +105,7 @@ class AlertRepository:
         if recommended_action:
             query = query.filter(
                 Alert.recommended_action == recommended_action
-            )    
+            )
 
         if start_date:
             query = query.filter(
@@ -181,7 +181,7 @@ class AlertRepository:
         if recommended_action:
             query = query.filter(
                 Alert.recommended_action == recommended_action
-            )           
+            )
 
         if start_date:
             query = query.filter(
@@ -200,7 +200,11 @@ class AlertRepository:
         db: Session,
         alert_id: int,
     ):
-        return db.query(Alert).filter(Alert.id == alert_id).first()
+        return (
+            db.query(Alert)
+            .filter(Alert.id == alert_id)
+            .first()
+        )
 
     @staticmethod
     def get_status_statistics(db: Session):
@@ -334,10 +338,18 @@ class AlertRepository:
         allowed_statuses = VALID_STATUS_TRANSITIONS.get(
             current_status,
             []
-        )   
+        )
 
         if status not in allowed_statuses:
             return False
+
+        status_history = AlertStatusHistory(
+            alert_id=alert.id,
+            previous_status=current_status,
+            new_status=status,
+        )
+
+        db.add(status_history)
 
         alert.status = status
 
@@ -345,3 +357,15 @@ class AlertRepository:
         db.refresh(alert)
 
         return alert
+
+    @staticmethod
+    def get_status_history(
+        db: Session,
+        alert_id: int,
+    ):
+        return (
+            db.query(AlertStatusHistory)
+            .filter(AlertStatusHistory.alert_id == alert_id)
+            .order_by(AlertStatusHistory.changed_at.asc())
+            .all()
+        )

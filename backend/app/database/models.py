@@ -1,6 +1,6 @@
-from sqlalchemy import Column, DateTime, Integer, String
+from sqlalchemy import Column, DateTime, Integer, String, ForeignKey
 from sqlalchemy.sql import func
-from sqlalchemy.orm import declarative_base
+from sqlalchemy.orm import declarative_base, relationship
 
 Base = declarative_base()
 
@@ -34,4 +34,36 @@ class Alert(Base):
     DateTime(timezone=True),
     server_default=func.now(),
     nullable=False,
+    )
+
+class AlertStatusHistory(Base):
+    __tablename__ = "alert_status_history"
+
+    id = Column(Integer, primary_key=True, index=True)
+
+    alert_id = Column(
+        Integer,
+        ForeignKey("alerts.id"),
+        nullable=False,
+    )
+
+    previous_status = Column(
+        String,
+        nullable=False,
+    )
+
+    new_status = Column(
+        String,
+        nullable=False,
+    )
+
+    changed_at = Column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+        nullable=False,
+    )
+
+    alert = relationship(
+        "Alert",
+        backref="status_history",
     )

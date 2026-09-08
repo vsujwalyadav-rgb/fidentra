@@ -185,6 +185,38 @@ def update_alert_status(
         "status": alert.status,
     }
 
+@router.get("/alerts/{alert_id}/history")
+def get_alert_status_history(
+    alert_id: int,
+    db: Session = Depends(get_db),
+):
+    alert = AlertRepository.get_by_id(
+        db=db,
+        alert_id=alert_id,
+    )
+
+    if alert is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Alert not found",
+        )
+
+    history = AlertRepository.get_status_history(
+        db=db,
+        alert_id=alert_id,
+    )
+
+    return {
+        "alert_id": alert_id,
+        "history": [
+            {
+                "previous_status": item.previous_status,
+                "new_status": item.new_status,
+                "changed_at": item.changed_at,
+            }
+            for item in history
+        ],
+    }
 
 @router.get("/alerts/{alert_id}")
 def get_alert_by_id(
